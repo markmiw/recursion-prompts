@@ -96,7 +96,18 @@ var range = function(x, y) {
 // https://www.khanacademy.org/computing/computer-science/algorithms/recursive-algorithms/a/computing-powers-of-a-number
 var exponent = function(base, exp) {
   if(exp === 0) {return 1;}
-  return base * exponent(base, exp - 1);
+  if(exp > 0 & exp % 2 === 0) {
+  exp = exp/2;
+  return (base * exponent(base, exp -1)) * (base * exponent(base, exp -1)) ;
+  }
+  if(exp > 0 & exp % 2 === 1) {
+  exp = exp - 1;
+  return base * (exponent(base, exp));
+  }
+  if(exp < 0) {
+  exp = -exp;
+  return 1/((exponent(base, exp)));
+  }
 };
 
 // 8. Determine if a number is a power of two.
@@ -202,11 +213,33 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
-};
+  let count = 0;
+    for(var key in obj) {
+    if(obj[key] === null) { return;}
+    if(typeof obj[key] === 'object') {
+      count = count + countValuesInObj(obj[key],value);
+    }
+    if(obj[key] === value) {
+    count = count + 1;
+    }
+    }
+    return count;
+  };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+
+  for(var key in obj) {
+    if(key === oldKey) {
+      obj[newKey] = obj[key];
+      delete obj[key];
+    }
+    if(typeof obj[key] === 'object') {
+      obj[key] = replaceKeysInObj(obj[key], oldKey, newKey);
+    }
+  }
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
